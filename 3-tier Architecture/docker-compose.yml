@@ -1,1 +1,35 @@
-version: "3.9"
+version: "2.16"
+networks:
+  saini_network:
+    driver: "bridge"
+
+
+services:
+  database:
+    image: "mysql:latest"
+    container_name: "database1"
+    networks:
+      - saini_network
+    volumes:
+      - "/workspace/Docker/3-tier Architecture/data:/var/lib/mysql"
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=blogDatabase
+      - MYSQL_USER=shivam
+      - MYSQL_PASSWORD=admin
+
+
+  wordpress:
+    depends_on: 
+      - "database"
+    image: "wordpress:latest"
+    container_name: "webapp1"
+    networks:
+     -  "saini_network"
+    ports:
+      - "8080:80"
+    environment:
+      - WORDPRESSS_DB_HOST=database1
+      - WORDPRESS_DB_USER=shivam
+      - WORDPRESS_DB_PASSWORD=admin
+      - WORDPRESS_DB_NAME=blogDatabase
